@@ -17,8 +17,8 @@ import {getDateFormated} from '../core/utils/commonFunctions.ts';
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
 
-export default class TaskList extends Component {
-  state: {tasks: TypeTask[]} = {
+export default class TaskList extends Component<{}, {tasks: TypeTask[]}> {
+  state = {
     tasks: [
       {
         id: Math.random(),
@@ -34,6 +34,21 @@ export default class TaskList extends Component {
     ],
   };
 
+  toogleTask = (taskId: number) => {
+    this.setState(prevState => {
+      const updatedTasks = prevState.tasks.map(task => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            doneAt: task.doneAt ? undefined : new Date(),
+          };
+        }
+        return task;
+      });
+      return {tasks: updatedTasks};
+    });
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -47,7 +62,9 @@ export default class TaskList extends Component {
           <FlatList
             data={this.state.tasks}
             keyExtractor={item => `${item.id}`}
-            renderItem={({item}) => <Task {...item} />}
+            renderItem={({item}) => (
+              <Task {...item} toogleTask={this.toogleTask} />
+            )}
           />
         </View>
       </SafeAreaView>

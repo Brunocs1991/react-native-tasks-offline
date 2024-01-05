@@ -1,16 +1,21 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {TypeTask} from '../core/types/TypeTask.ts';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../core/styles/globalStyles.ts';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
 
-export default (props: TypeTask) => {
+interface TaskProps extends TypeTask {
+  toogleTask: (taskId: number) => void; // Substitua `number` pelo tipo real do ID
+}
+export default (props: TaskProps) => {
   const doneOrNotStyle = props.doneAt !== undefined ? styles.textCheckd : {};
   const date = getDateFormated(props.doneAt ? props.doneAt : props.estimateAt);
   return (
     <View style={styles.container}>
-      <View style={styles.checkContainer}>{getCheckView(props.doneAt)}</View>
+      <TouchableWithoutFeedback onPress={() => props.toogleTask(props.id)}>
+        <View style={styles.checkContainer}>{getCheckView(props.doneAt)}</View>
+      </TouchableWithoutFeedback>
       <View>
         <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
         <Text style={styles.date}>{date}</Text>
