@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 
 import commonStyles from '../commonStyles.ts';
+import Task from '../components/Task.tsx';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
@@ -30,9 +31,12 @@ export default class TaskList extends Component {
           </View>
         </ImageBackground>
         <View style={styles.taskContainer}>
-          <Text>Tarefa #01</Text>
-          <Text>Tarefa #02</Text>
-          <Text>Tarefa #03</Text>
+          <Task
+            desc={'Comprar Livro'}
+            estimateAt={new Date()}
+            doneAt={new Date()}
+          />
+          <Task desc={'Ler Livro'} estimateAt={new Date()} doneAt={undefined} />
         </View>
       </SafeAreaView>
     );
