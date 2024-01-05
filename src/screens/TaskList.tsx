@@ -16,7 +16,7 @@ export default class TaskList extends Component {
       <SafeAreaView style={styles.container}>
         <ImageBackground source={todayImage} style={styles.background} />
         <View style={styles.taskContainer}>
-          <Text>TaskList</Text>
+          <Text>Taks Offline</Text>
         </View>
       </SafeAreaView>
     );
