@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  FlatList,
   ImageBackground,
   ImageSourcePropType,
   SafeAreaView,
@@ -10,12 +11,29 @@ import {
 
 import commonStyles from '../commonStyles.ts';
 import Task from '../components/Task.tsx';
+import {TaskType} from '../types/TaskType.ts';
 import {getDateFormated} from '../common/commonMethods.ts';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
 
 export default class TaskList extends Component {
+  state: {tasks: TaskType[]} = {
+    tasks: [
+      {
+        id: Math.random(),
+        desc: 'Comprar Livro',
+        estimateAt: new Date(),
+        doneAt: new Date(),
+      },
+      {
+        id: Math.random(),
+        desc: 'Ler Livro',
+        estimateAt: new Date(),
+      },
+    ],
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -26,14 +44,10 @@ export default class TaskList extends Component {
           </View>
         </ImageBackground>
         <View style={styles.taskContainer}>
-          <Task
-            desc={'Comprar Livro'}
-            estimateAt={new Date()}
-            doneAt={new Date()}
-          />
-          <Task
-            desc={'Ler Livro'}
-            estimateAt={new Date('2023-02-01T18:24:00.000-03:00')}
+          <FlatList
+            data={this.state.tasks}
+            keyExtractor={item => `${item.id}`}
+            renderItem={({item}) => <Task {...item} />}
           />
         </View>
       </SafeAreaView>

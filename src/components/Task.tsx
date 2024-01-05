@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {TaksType} from '../types/TaksType.ts';
+import {TaskType} from '../types/TaskType.ts';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles.ts';
 import {getDateFormated} from '../common/commonMethods.ts';
 
-export default (props: TaksType) => {
+export default (props: TaskType) => {
   const doneOrNotStyle = props.doneAt !== undefined ? styles.textCheckd : {};
   const date = getDateFormated(props.doneAt ? props.doneAt : props.estimateAt);
   return (
