@@ -7,16 +7,32 @@ import {
   Text,
   View,
 } from 'react-native';
+import moment from 'moment';
+
+import commonStyles from '../commonStyles.ts';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
+
 export default class TaskList extends Component {
   render() {
+    function getToday() {
+      moment.updateLocale('pt-br', {});
+      return moment().locale('pt-br').format('ddd, D [de] MMMM');
+    }
+
     return (
       <SafeAreaView style={styles.container}>
-        <ImageBackground source={todayImage} style={styles.background} />
+        <ImageBackground source={todayImage} style={styles.background}>
+          <View style={styles.titleBar}>
+            <Text style={styles.title}>Hoje</Text>
+            <Text style={styles.subTitle}>{getToday()}</Text>
+          </View>
+        </ImageBackground>
         <View style={styles.taskContainer}>
-          <Text>Taks Offline</Text>
+          <Text>Tarefa #01</Text>
+          <Text>Tarefa #02</Text>
+          <Text>Tarefa #03</Text>
         </View>
       </SafeAreaView>
     );
@@ -32,5 +48,23 @@ const styles = StyleSheet.create({
   },
   taskContainer: {
     flex: 7,
+  },
+  titleBar: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  title: {
+    fontFamily: commonStyles.fontFamily,
+    color: commonStyles.colors.secondary,
+    fontSize: 50,
+    marginLeft: 20,
+    marginBottom: 20,
+  },
+  subTitle: {
+    fontFamily: commonStyles.fontFamily,
+    color: commonStyles.colors.secondary,
+    fontSize: 20,
+    marginLeft: 20,
+    marginBottom: 20,
   },
 });
