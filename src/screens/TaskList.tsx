@@ -9,16 +9,16 @@ import {
   View,
 } from 'react-native';
 
-import commonStyles from '../commonStyles.ts';
+import commonStyles from '../core/styles/globalStyles.ts';
 import Task from '../components/Task.tsx';
-import {TaskType} from '../types/TaskType.ts';
-import {getDateFormated} from '../common/commonMethods.ts';
+import {TypeTask} from '../core/types/TypeTask.ts';
+import {getDateFormated} from '../core/utils/commonFunctions.ts';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
 
 export default class TaskList extends Component {
-  state: {tasks: TaskType[]} = {
+  state: {tasks: TypeTask[]} = {
     tasks: [
       {
         id: Math.random(),

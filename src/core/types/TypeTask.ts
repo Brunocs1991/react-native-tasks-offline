@@ -1,4 +1,4 @@
-export interface TaskType {
+export interface TypeTask {
   id: number;
   desc: string;
   estimateAt: Date;
