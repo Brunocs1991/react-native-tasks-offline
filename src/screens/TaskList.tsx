@@ -22,10 +22,11 @@ const todayImage =
 
 export default class TaskList extends Component<
   {},
-  {tasks: TypeTask[]; showDoneTasks: boolean}
+  {tasks: TypeTask[]; showDoneTasks: boolean; visibleTasks: TypeTask[]}
 > {
   state = {
     showDoneTasks: true,
+    visibleTasks: [],
     tasks: [
       {
         id: Math.random(),
@@ -44,7 +45,24 @@ export default class TaskList extends Component<
   tootleFilter = () => {
     this.setState(prevState => {
       return {showDoneTasks: !prevState.showDoneTasks};
-    });
+    }, this.filterTasks);
+  };
+
+  componentDidMount = () => {
+    this.filterTasks();
+  };
+
+  isPending = (task: TypeTask) => {
+    return task.doneAt === undefined;
+  };
+  filterTasks = () => {
+    let visibleTasks: TypeTask[];
+    if (this.state.showDoneTasks) {
+      visibleTasks = [...this.state.tasks];
+    } else {
+      visibleTasks = this.state.tasks.filter(this.isPending);
+    }
+    this.setState({visibleTasks});
   };
 
   toogleTask = (taskId: number) => {
@@ -59,7 +77,7 @@ export default class TaskList extends Component<
         return task;
       });
       return {tasks: updatedTasks};
-    });
+    }, this.filterTasks);
   };
 
   render() {
@@ -82,8 +100,8 @@ export default class TaskList extends Component<
         </ImageBackground>
         <View style={styles.taskContainer}>
           <FlatList
-            data={this.state.tasks}
-            keyExtractor={item => `${item.id}`}
+            data={this.state.visibleTasks}
+            keyExtractor={(item: TypeTask) => `${item.id}`}
             renderItem={({item}) => (
               <Task {...item} toogleTask={this.toogleTask} />
             )}
