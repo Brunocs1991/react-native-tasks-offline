@@ -3,9 +3,11 @@ import {
   FlatList,
   ImageBackground,
   ImageSourcePropType,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -13,12 +15,17 @@ import commonStyles from '../core/styles/globalStyles.ts';
 import Task from '../components/Task.tsx';
 import {TypeTask} from '../core/types/TypeTask.ts';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
 
-export default class TaskList extends Component<{}, {tasks: TypeTask[]}> {
+export default class TaskList extends Component<
+  {},
+  {tasks: TypeTask[]; showDoneTasks: boolean}
+> {
   state = {
+    showDoneTasks: true,
     tasks: [
       {
         id: Math.random(),
@@ -32,6 +39,12 @@ export default class TaskList extends Component<{}, {tasks: TypeTask[]}> {
         estimateAt: new Date(),
       },
     ],
+  };
+
+  tootleFilter = () => {
+    this.setState(prevState => {
+      return {showDoneTasks: !prevState.showDoneTasks};
+    });
   };
 
   toogleTask = (taskId: number) => {
@@ -53,6 +66,15 @@ export default class TaskList extends Component<{}, {tasks: TypeTask[]}> {
     return (
       <SafeAreaView style={styles.container}>
         <ImageBackground source={todayImage} style={styles.background}>
+          <View style={styles.iconBar}>
+            <TouchableOpacity onPress={this.tootleFilter}>
+              <Icon
+                name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
+                size={20}
+                color={commonStyles.colors.secondary}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.titleBar}>
             <Text style={styles.title}>Hoje</Text>
             <Text style={styles.subTitle}>{getDateFormated()}</Text>
@@ -99,5 +121,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     marginBottom: 20,
+  },
+  iconBar: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    justifyContent: 'flex-end',
+    marginTop: Platform.OS === 'ios' ? 40 : 10,
   },
 });
