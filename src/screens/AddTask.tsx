@@ -72,7 +72,6 @@ export default class AddTask extends Component<AddTaskProps, AddTaskState> {
   getDatePicker = () => {
     let datePicker = (
       <RNDateTimePicker
-        locale={'pt-br'}
         value={this.state.date}
         onChange={(_, date) =>
           this.setState({date: date!, showDatePicker: false})
