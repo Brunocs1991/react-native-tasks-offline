@@ -16,16 +16,27 @@ import Task from '../components/Task.tsx';
 import {TypeTask} from '../core/types/TypeTask.ts';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AddTask from './AddTask.tsx';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
 
-export default class TaskList extends Component<
-  {},
-  {tasks: TypeTask[]; showDoneTasks: boolean; visibleTasks: TypeTask[]}
-> {
+interface TaskListProps {
+  onCancel: () => void;
+  isVisible: boolean;
+}
+
+interface TaskListState {
+  tasks: TypeTask[];
+  showDoneTasks: boolean;
+  showAddTask: boolean;
+  visibleTasks: TypeTask[];
+}
+
+export default class TaskList extends Component<TaskListProps, TaskListState> {
   state = {
     showDoneTasks: true,
+    showAddTask: true,
     visibleTasks: [],
     tasks: [
       {
@@ -41,6 +52,41 @@ export default class TaskList extends Component<
       },
     ],
   };
+
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <AddTask
+          isVisible={this.state.showAddTask}
+          onCancel={() => this.setState({showAddTask: false})}
+        />
+        <ImageBackground source={todayImage} style={styles.background}>
+          <View style={styles.iconBar}>
+            <TouchableOpacity onPress={this.tootleFilter}>
+              <Icon
+                name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
+                size={20}
+                color={commonStyles.colors.secondary}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.titleBar}>
+            <Text style={styles.title}>Hoje</Text>
+            <Text style={styles.subTitle}>{getDateFormated()}</Text>
+          </View>
+        </ImageBackground>
+        <View style={styles.taskContainer}>
+          <FlatList
+            data={this.state.visibleTasks}
+            keyExtractor={(item: TypeTask) => `${item.id}`}
+            renderItem={({item}) => (
+              <Task {...item} toogleTask={this.toogleTask} />
+            )}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   tootleFilter = () => {
     this.setState(prevState => {
@@ -79,37 +125,6 @@ export default class TaskList extends Component<
       return {tasks: updatedTasks};
     }, this.filterTasks);
   };
-
-  render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ImageBackground source={todayImage} style={styles.background}>
-          <View style={styles.iconBar}>
-            <TouchableOpacity onPress={this.tootleFilter}>
-              <Icon
-                name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
-                size={20}
-                color={commonStyles.colors.secondary}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.titleBar}>
-            <Text style={styles.title}>Hoje</Text>
-            <Text style={styles.subTitle}>{getDateFormated()}</Text>
-          </View>
-        </ImageBackground>
-        <View style={styles.taskContainer}>
-          <FlatList
-            data={this.state.visibleTasks}
-            keyExtractor={(item: TypeTask) => `${item.id}`}
-            renderItem={({item}) => (
-              <Task {...item} toogleTask={this.toogleTask} />
-            )}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
 }
 
 const styles = StyleSheet.create({
