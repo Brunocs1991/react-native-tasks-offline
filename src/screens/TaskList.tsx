@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 
-import commonStyles from '../core/styles/globalStyles.ts';
+import globalStyles from '../core/styles/globalStyles.ts';
 import Task from '../components/Task.tsx';
 import {TypeTask} from '../core/types/TypeTask.ts';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
@@ -36,7 +36,7 @@ interface TaskListState {
 export default class TaskList extends Component<TaskListProps, TaskListState> {
   state = {
     showDoneTasks: true,
-    showAddTask: true,
+    showAddTask: false,
     visibleTasks: [],
     tasks: [
       {
@@ -66,7 +66,7 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
               <Icon
                 name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
                 size={20}
-                color={commonStyles.colors.secondary}
+                color={globalStyles.colors.secondary}
               />
             </TouchableOpacity>
           </View>
@@ -84,6 +84,12 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
             )}
           />
         </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.7}
+          onPress={() => this.setState({showAddTask: true})}>
+          <Icon name={'plus'} size={20} color={globalStyles.colors.secondary} />
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -142,15 +148,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   title: {
-    fontFamily: commonStyles.fontFamily,
-    color: commonStyles.colors.secondary,
+    fontFamily: globalStyles.fontFamily,
+    color: globalStyles.colors.secondary,
     fontSize: 50,
     marginLeft: 20,
     marginBottom: 20,
   },
   subTitle: {
-    fontFamily: commonStyles.fontFamily,
-    color: commonStyles.colors.secondary,
+    fontFamily: globalStyles.fontFamily,
+    color: globalStyles.colors.secondary,
     fontSize: 20,
     marginLeft: 20,
     marginBottom: 20,
@@ -160,5 +166,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     justifyContent: 'flex-end',
     marginTop: Platform.OS === 'ios' ? 40 : 10,
+  },
+  addButton: {
+    position: 'absolute',
+    right: 30,
+    bottom: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: globalStyles.colors.today,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
