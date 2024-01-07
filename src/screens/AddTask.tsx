@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {
   Modal,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -9,7 +10,8 @@ import {
   View,
 } from 'react-native';
 import globalStyles from '../core/styles/globalStyles.ts';
-
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {getDateFormated} from '../core/utils/commonFunctions.ts';
 interface AddTaskProps {
   onCancel: () => void;
   isVisible: boolean;
@@ -17,14 +19,21 @@ interface AddTaskProps {
 
 interface AddTaskState {
   desc: string;
+  date: Date;
+  showDatePicker: boolean;
 }
 
-const initialState: AddTaskState = {desc: ''};
+const initialState: AddTaskState = {
+  desc: '',
+  date: new Date(),
+  showDatePicker: false,
+};
 
 export default class AddTask extends Component<AddTaskProps, AddTaskState> {
   state = {
     ...initialState,
   };
+
   render() {
     return (
       <Modal
@@ -43,6 +52,7 @@ export default class AddTask extends Component<AddTaskProps, AddTaskState> {
             onChangeText={desc => this.setState({desc})}
             value={this.state.desc}
           />
+          {this.getDatePicker()}
           <View style={styles.buttons}>
             <TouchableOpacity onPress={this.props.onCancel}>
               <Text style={styles.button}>Cancelar</Text>
@@ -58,6 +68,33 @@ export default class AddTask extends Component<AddTaskProps, AddTaskState> {
       </Modal>
     );
   }
+
+  getDatePicker = () => {
+    let datePicker = (
+      <RNDateTimePicker
+        locale={'pt-br'}
+        value={this.state.date}
+        onChange={(_, date) =>
+          this.setState({date: date!, showDatePicker: false})
+        }
+        mode={'date'}
+      />
+    );
+    if (Platform.OS === 'android') {
+      datePicker = (
+        <View>
+          <TouchableOpacity
+            onPress={() => this.setState({showDatePicker: true})}>
+            <Text style={styles.date}>
+              {getDateFormated(this.state.date, 'dddd, D [de] MMMM [de] YYYY')}
+            </Text>
+          </TouchableOpacity>
+          {this.state.showDatePicker && datePicker}
+        </View>
+      );
+    }
+    return datePicker;
+  };
 }
 
 const styles = StyleSheet.create({
@@ -93,5 +130,10 @@ const styles = StyleSheet.create({
     margin: 20,
     marginRight: 30,
     color: globalStyles.colors.today,
+  },
+  date: {
+    fontFamily: globalStyles.fontFamily,
+    fontSize: 20,
+    marginLeft: 15,
   },
 });

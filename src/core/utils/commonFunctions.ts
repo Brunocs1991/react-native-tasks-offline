@@ -1,6 +1,6 @@
 import moment from 'moment/moment';
 
-export function getDateFormated(date?: Date) {
+export function getDateFormated(date?: Date, formato?: string) {
   moment.updateLocale('pt-br', {});
-  return moment(date).format('ddd, D [de] MMMM');
+  return moment(date).format(formato ?? 'ddd, D [de] MMMM');
 }
