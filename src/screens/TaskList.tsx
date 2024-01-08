@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  Alert,
   FlatList,
   ImageBackground,
   ImageSourcePropType,
@@ -17,6 +18,7 @@ import {TypeTask} from '../core/types/TypeTask.ts';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AddTask from './AddTask.tsx';
+import {TypeSaveTask} from '../core/types/TypeSaveTask.ts';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
@@ -59,6 +61,7 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
         <AddTask
           isVisible={this.state.showAddTask}
           onCancel={() => this.setState({showAddTask: false})}
+          onSave={this.addTask}
         />
         <ImageBackground source={todayImage} style={styles.background}>
           <View style={styles.iconBar}>
@@ -94,6 +97,23 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
     );
   }
 
+  addTask = (newTask: TypeSaveTask) => {
+    if (!newTask?.desc || !newTask.desc.trim()) {
+      Alert.alert('Dados Inválidos', 'Descricao não informada!');
+      return;
+    }
+    const task: TypeTask = {
+      id: Math.random(),
+      desc: newTask.desc,
+      estimateAt: newTask.date,
+    };
+    this.setState(prevState => {
+      return {
+        tasks: [...prevState.tasks, task],
+        showAddTask: false,
+      };
+    }, this.filterTasks);
+  };
   tootleFilter = () => {
     this.setState(prevState => {
       return {showDoneTasks: !prevState.showDoneTasks};

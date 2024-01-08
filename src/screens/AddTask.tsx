@@ -12,8 +12,11 @@ import {
 import globalStyles from '../core/styles/globalStyles.ts';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {getDateFormated} from '../core/utils/commonFunctions.ts';
+import {TypeSaveTask} from '../core/types/TypeSaveTask.ts';
+
 interface AddTaskProps {
   onCancel: () => void;
+  onSave: (newTask: TypeSaveTask) => void;
   isVisible: boolean;
 }
 
@@ -57,7 +60,7 @@ export default class AddTask extends Component<AddTaskProps, AddTaskState> {
             <TouchableOpacity onPress={this.props.onCancel}>
               <Text style={styles.button}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.save}>
               <Text style={styles.button}>Salvar</Text>
             </TouchableOpacity>
           </View>
@@ -69,6 +72,14 @@ export default class AddTask extends Component<AddTaskProps, AddTaskState> {
     );
   }
 
+  save = () => {
+    const newTask: TypeSaveTask = {
+      desc: this.state.desc,
+      date: this.state.date,
+    };
+    this.props.onSave?.(newTask);
+    this.setState({...initialState});
+  };
   getDatePicker = () => {
     let datePicker = (
       <RNDateTimePicker
