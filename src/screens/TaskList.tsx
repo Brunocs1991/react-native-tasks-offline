@@ -83,7 +83,11 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
             data={this.state.visibleTasks}
             keyExtractor={(item: TypeTask) => `${item.id}`}
             renderItem={({item}) => (
-              <Task {...item} toogleTask={this.toogleTask} />
+              <Task
+                {...item}
+                onToogleTask={this.toogleTask}
+                onDelete={this.deleteTaks}
+              />
             )}
           />
         </View>
@@ -96,6 +100,14 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
       </SafeAreaView>
     );
   }
+
+  deleteTaks = (id: number) => {
+    this.setState(prevState => {
+      return {
+        tasks: [...prevState.tasks.filter(task => task.id !== id)],
+      };
+    }, this.filterTasks);
+  };
 
   addTask = (newTask: TypeSaveTask) => {
     if (!newTask?.desc || !newTask.desc.trim()) {
