@@ -19,6 +19,7 @@ import {getDateFormated} from '../core/utils/commonFunctions.ts';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AddTask from './AddTask.tsx';
 import {TypeSaveTask} from '../core/types/TypeSaveTask.ts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const todayImage =
   require('../../assets/imgs/today.jpg') as ImageSourcePropType;
@@ -35,24 +36,16 @@ interface TaskListState {
   visibleTasks: TypeTask[];
 }
 
+const initialState = {
+  showDoneTasks: true,
+  showAddTask: false,
+  visibleTasks: [],
+  tasks: [],
+};
+
 export default class TaskList extends Component<TaskListProps, TaskListState> {
   state = {
-    showDoneTasks: true,
-    showAddTask: false,
-    visibleTasks: [],
-    tasks: [
-      {
-        id: Math.random(),
-        desc: 'Comprar Livro',
-        estimateAt: new Date(),
-        doneAt: new Date(),
-      },
-      {
-        id: Math.random(),
-        desc: 'Ler Livro',
-        estimateAt: new Date(),
-      },
-    ],
+    ...initialState,
   };
 
   render() {
@@ -132,8 +125,10 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
     }, this.filterTasks);
   };
 
-  componentDidMount = () => {
-    this.filterTasks();
+  componentDidMount = async () => {
+    const stateString = await AsyncStorage.getItem('tasksState');
+    const state = JSON.parse(stateString ?? 'null') || initialState;
+    this.setState(state, this.filterTasks);
   };
 
   isPending = (task: TypeTask) => {
@@ -147,6 +142,7 @@ export default class TaskList extends Component<TaskListProps, TaskListState> {
       visibleTasks = this.state.tasks.filter(this.isPending);
     }
     this.setState({visibleTasks});
+    AsyncStorage.setItem('tasksState', JSON.stringify(this.state)).then();
   };
 
   toogleTask = (taskId: number) => {
